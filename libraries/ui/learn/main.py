@@ -5,6 +5,8 @@ from libraries.consts import Text
 from libraries.consts import Colors
 from libraries.consts import UI
 
+
+
 class _Consts:
     CARD_HEIGHT = 100
     CARD_WIDTH = 180
@@ -68,6 +70,8 @@ class LearnMenu:
             page.overlay.append(LearnMenu.LEARN_DIALOG)
         LearnMenu.LEARN_DIALOG.open = True
         page.update()
+
+    
 
     _dummy_beginner_concepts = [
         {"title": "Use Cover", "tooltip": "Learn how to die less"},
