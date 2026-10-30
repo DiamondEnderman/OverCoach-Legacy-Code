@@ -1,6 +1,9 @@
 import os
 
-import file_controller
+from libraries.controllers import file_controller
+
+class NotInPaths(Exception):
+    pass
 
 class _PATHS:
     DB = file_controller.SYSTEM_PATHS["learning_db"]
@@ -15,7 +18,7 @@ def pull_db_data(level: str) -> dict:
     level_attr = getattr(_PATHS, level.upper(), None)
 
     if level_attr is None:
-        raise NotInPaths(f"{level}, not found in paths")
+        raise NotInPaths(f"'{level}' not found in paths")
 
     return file_controller.pull_data(level_attr)
 
@@ -29,5 +32,4 @@ def get_card_titles(level: str) -> list:
 
     return titles
 
-class NotInPaths(Exception):
-    pass
+

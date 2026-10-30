@@ -5,7 +5,7 @@ from libraries.consts import Text
 from libraries.consts import Colors
 from libraries.consts import UI
 
-
+from libraries.controllers import learn_db_manager as db_man
 
 class _Consts:
     CARD_HEIGHT = 100
@@ -31,10 +31,15 @@ def _create_concept_card(title: str, tooltip_text: str = "") -> flet.Container:
         content = TextTemplate.create(title, "h3"),
     )
 
-def _build_category_rail(title: str, concepts: dict) -> flet.Container:
+def _build_category_rail(title: str, concepts: dict | list) -> flet.Container:
+    concept_list = list(concepts.values()) if isinstance(concepts, dict) else concepts
+
     cards = [
-        _create_concept_card(concept.get("title", "Concept"), concept.get("tooltip", ""))
-        for concept in concepts
+        _create_concept_card(
+            concept.get("title") or concept.get("card_title", "Concept"),
+            concept.get("tooltip", "")
+        )
+        for concept in concept_list
     ]
 
     inner_row_container = flet.Container(
@@ -71,21 +76,7 @@ class LearnMenu:
         LearnMenu.LEARN_DIALOG.open = True
         page.update()
 
-    
-
-    _dummy_beginner_concepts = [
-        {"title": "Use Cover", "tooltip": "Learn how to die less"},
-        {"title": "High Ground", "tooltip": "Gain sightline advantage"},
-        {"title": "Turn Off Comms", "tooltip": "Protect your mental game"},
-        {"title": "Side Angle", "tooltip": "Avoid standing in main"},
-        {"title": "Relax", "tooltip": "Keep wrist tension low"},
-    ]
-
-    _dummy_intermediate_concepts = [
-        {"title": "Peeker's Advantage", "tooltip": "Take tight angles"},
-        {"title": "Isolate 1v1s", "tooltip": "Section off enemies using walls"},
-        {"title": "Engagement Timing", "tooltip": "Strike when enemies are distracted"},
-    ]
+    _beginner_concepts= db_man.pull_db_data("beginner")
 
     LEARN_DIALOG = flet.AlertDialog(
         title=flet.Row(
@@ -113,10 +104,7 @@ class LearnMenu:
             height=550,
             content=flet.Column(
                 controls=[
-                    _build_category_rail("Beginner", _dummy_beginner_concepts),
-                    _build_category_rail(
-                        "Intermediate", _dummy_intermediate_concepts
-                    ),
+                    _build_category_rail("Beginner", _beginner_concepts),
                 ],
                 scroll=flet.ScrollMode.AUTO,
                 spacing=20,

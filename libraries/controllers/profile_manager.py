@@ -32,11 +32,16 @@ class Profile:
         Fetches data from OverFast API and pushes it to the profile instance
         specifically grabs ranks and main hero
         """
-        ranks = of.Ranks(self.battletag, self.platform)
-        self.ranks = ranks.get_ranks()
+        from requests import exceptions
 
-        career_stats = of.CareerStats(self.battletag)
-        self.main_hero = career_stats.main_hero
+        try:
+            ranks = of.Ranks(self.battletag, self.platform)
+            self.ranks = ranks.get_ranks()
+
+            career_stats = of.CareerStats(self.battletag)
+            self.main_hero = career_stats.main_hero
+        except exceptions.RequestException as err:
+            print(f"Network Warning: Could not sync live data({err}). Using locally cached profile data.")
 
     def load_from_file(self) -> None:
         if not fc.os.path.exists(self.profile_path):

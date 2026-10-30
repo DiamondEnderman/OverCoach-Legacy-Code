@@ -58,3 +58,4 @@ if __name__ == "__main__":
     sync_all()
 
     flet.run(main=app, assets_dir=assets_path)
+
